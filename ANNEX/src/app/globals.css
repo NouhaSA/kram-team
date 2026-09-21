@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+:root {
+  --kt-black: #0b0b0c;
+  --kt-ink: #141416;
+  --kt-red: #c8102e;
+  --kt-red-hot: #e11d38;
+  --kt-cream: #f4f1ec;
+  --kt-stone: #b8b2a8;
+  --kt-muted: #8a8580;
+  --background: var(--kt-black);
+  --foreground: #f5f2ed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-kt-black: var(--kt-black);
+  --color-kt-ink: var(--kt-ink);
+  --color-kt-red: var(--kt-red);
+  --color-kt-red-hot: var(--kt-red-hot);
+  --color-kt-cream: var(--kt-cream);
+  --color-kt-stone: var(--kt-stone);
+  --color-kt-muted: var(--kt-muted);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--kt-black);
+  color: var(--foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--kt-red) 70%, black);
+  color: white;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade {
+  animation: fade 1.1s ease both;
+}
+
+.animate-sweep {
+  transform-origin: left;
+  animation: sweep 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.delay-1 {
+  animation-delay: 0.12s;
+}
+.delay-2 {
+  animation-delay: 0.24s;
+}
+.delay-3 {
+  animation-delay: 0.38s;
+}
+.delay-4 {
+  animation-delay: 0.5s;
+}
+
+.hero-grain {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(200, 16, 46, 0.28), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 15% 80%, rgba(200, 16, 46, 0.12), transparent 50%),
+    linear-gradient(160deg, #0b0b0c 0%, #151518 45%, #0b0b0c 100%);
+}
+
+.hero-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.section-band {
+  background:
+    linear-gradient(180deg, #101012 0%, #0b0b0c 100%);
+}
