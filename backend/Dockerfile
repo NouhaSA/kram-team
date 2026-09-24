@@ -1,4 +1,4 @@
-# Étape 1 : installation des dépendances Composer
+# Etape 1 : installation des dependances Composer
 FROM composer:2 AS vendor
 
 WORKDIR /app
@@ -9,7 +9,7 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 COPY . .
 RUN composer dump-autoload --optimize --no-dev --no-scripts
 
-# Étape 2 : image finale php-fpm
+# Etape 2 : image finale php-fpm
 FROM php:8.3-fpm-alpine
 
 RUN apk add --no-cache postgresql-dev libzip-dev $PHPIZE_DEPS \
@@ -24,6 +24,8 @@ COPY --from=vendor /app /var/www
 
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
+
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 USER www-data
 
