@@ -7,12 +7,38 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy-staging:
+    # Automatique sur main, seulement quand le deploiement est active
+    if: github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
-    environment: production
+    environment: staging
+    concurrency: deploy-staging
     steps:
       - uses: actions/checkout@v4
-      - name: Deployer via SSH
+      - name: Deployer le staging via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd /opt/kram-team
+            git fetch --tags
+            git checkout main
+            git pull --ff-only origin main
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --wait
+            ./scripts/deploy-migrate.sh
+
+  deploy-production:
+    # Seulement sur un tag vX.Y.Z, avec approbation de l'environnement production
+    if: startsWith(github.ref, 'refs/tags/v') && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: deploy-production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deployer la production via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEPLOY_HOST }}
