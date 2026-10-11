@@ -45,3 +45,31 @@ Deploiement automatique, rollback et backup ecrits mais non executes :
 necessitent le VPS et les secrets GitHub (DEPLOY_HOST, DEPLOY_USER,
 DEPLOY_SSH_KEY) non encore configures. A valider lors du premier
 deploiement reel.
+
+## Secrets et configuration
+- Creer un fichier .env a la racine (non versionne) a partir de .env.compose.example.
+- DB_PASSWORD doit etre une valeur forte (ex : openssl rand -base64 24). Le compose refuse de demarrer si elle manque.
+- PostgreSQL n'applique le mot de passe qu'a la creation du volume. Pour le changer ensuite :
+  ALTER USER kram PASSWORD '...'; puis mettre a jour .env et relancer up -d.
+- Fuseau horaire : APP_TIMEZONE=Africa/Tunis (compose). Verifier avec php artisan about --only=environment.
+
+## Environnements et deploiement
+- Staging : automatique a chaque push sur main. Production : uniquement sur un tag vX.Y.Z.
+- Creer les environnements GitHub staging et production, chacun avec ses secrets DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY.
+- Activer le deploiement avec la variable de depot DEPLOY_ENABLED=true. Sans elle, les jobs sont ignores (pas d'echec).
+- Approbation manuelle de la production : Settings > Environments > production > Required reviewers (selon l'offre GitHub).
+
+## Nginx apres un redemarrage du backend
+- Nginx memorise l'adresse du backend au demarrage. Si le backend est recree, Nginx renvoie 502.
+- deploy-migrate.sh et rollback.sh redemarrent Nginx. En manuel : docker compose -f docker-compose.prod.yml restart nginx.
+
+## Test de restauration (base isolee)
+- Sauvegarde locale : BACKUP_DIR=./backups bash scripts/backup-postgres.sh.
+- Creer une base vide kram_restore_test, puis : DB_NAME=kram_restore_test bash scripts/restore-postgres.sh <fichier>.
+- Comparer SELECT count(*) FROM users; dans les deux bases, puis supprimer la base de test.
+
+## Seed de production
+- Ne jamais lancer DemoDataSeeder en production (comptes de demo, mot de passe connu, et Faker absent de l'image).
+- Premier amorcage : ADMIN_EMAIL=... ADMIN_PASSWORD=... ./scripts/deploy-migrate.sh --seed
+  (mot de passe de 12 caracteres minimum, jamais ecrit dans un fichier).
+- Le seed de demonstration reste reserve au poste local : php artisan db:seed avec les dependances de dev.

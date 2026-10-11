@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    private function seedRolesAndPermissions(): void
+    protected function seedRolesAndPermissions(): void
     {
         $permissions = [
             ['name' => 'Voir adhérents', 'slug' => 'members.view', 'module' => 'Members'],

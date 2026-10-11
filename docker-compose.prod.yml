@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: kram_team
       POSTGRES_USER: kram
-      POSTGRES_PASSWORD: secret
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant dans .env}
     volumes:
       - kram_postgres_prod:/var/lib/postgresql/data
     deploy:
@@ -49,12 +49,13 @@ services:
     environment:
       APP_NAME: "Kram Team"
       APP_ENV: production
+      APP_TIMEZONE: Africa/Tunis
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
       DB_DATABASE: kram_team
       DB_USERNAME: kram
-      DB_PASSWORD: secret
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant dans .env}
       REDIS_HOST: redis
       QUEUE_CONNECTION: redis
       CACHE_STORE: redis
@@ -103,12 +104,13 @@ services:
     environment:
       APP_NAME: "Kram Team"
       APP_ENV: production
+      APP_TIMEZONE: Africa/Tunis
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
       DB_DATABASE: kram_team
       DB_USERNAME: kram
-      DB_PASSWORD: secret
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant dans .env}
       REDIS_HOST: redis
       QUEUE_CONNECTION: redis
     command: php artisan queue:work --tries=3 --timeout=90
@@ -135,12 +137,13 @@ services:
     environment:
       APP_NAME: "Kram Team"
       APP_ENV: production
+      APP_TIMEZONE: Africa/Tunis
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
       DB_DATABASE: kram_team
       DB_USERNAME: kram
-      DB_PASSWORD: secret
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant dans .env}
       REDIS_HOST: redis
       QUEUE_CONNECTION: redis
       CACHE_STORE: redis

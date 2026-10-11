@@ -17,7 +17,9 @@ docker compose -f docker-compose.prod.yml exec -T backend php artisan storage:li
 if [ "$1" = "--seed" ]; then
   echo "==> Seed initial (bootstrap production : roles, permissions, offres)"
   echo "    ATTENTION : ne pas utiliser DemoDataSeeder en production."
-  docker compose -f docker-compose.prod.yml exec -T backend php artisan db:seed --force
+  docker compose -f docker-compose.prod.yml exec -T -e ADMIN_EMAIL="$ADMIN_EMAIL" -e ADMIN_PASSWORD="$ADMIN_PASSWORD" backend php artisan db:seed --class=ProductionSeeder --force
 fi
 
+echo "==> Redemarrage de Nginx (le backend a une nouvelle adresse apres up -d)"
+docker compose -f docker-compose.prod.yml restart nginx
 echo "==> Termine."

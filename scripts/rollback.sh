@@ -13,4 +13,6 @@ git fetch --tags
 git checkout "$1"
 docker compose -f docker-compose.prod.yml pull
 docker compose -f docker-compose.prod.yml up -d --wait
+echo "==> Redemarrage de Nginx"
+docker compose -f docker-compose.prod.yml restart nginx
 echo "==> Rollback termine. Verifier /api/health."
