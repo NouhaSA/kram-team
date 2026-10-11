@@ -44,3 +44,4 @@ ANNEX/pdf-gen-log.txt
 *.local
 
 # Optional large binaries already tracked elsewhere if needed — keep PDFs in repo for sharing
+backups/
